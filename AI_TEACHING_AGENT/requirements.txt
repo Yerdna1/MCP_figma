@@ -8,4 +8,5 @@ composio_core
 composio
 google-search-results
 arxiv
-fastmcp
+
+pypdf
