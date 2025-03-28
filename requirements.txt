@@ -3,3 +3,4 @@ python-dotenv
 fastmcp
 streamlit
 mcp
+fastmcp
