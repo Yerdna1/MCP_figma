@@ -4,13 +4,14 @@ import os
 import argparse
 import json
 from pathlib import Path
-
-# Import the clean_node module from the package
-from figma_mcp.clean_node import transform_figma_json
+import re
 
 import requests
+from figma_mcp import FastMCP
 from dotenv import load_dotenv
-from mcp.server.fastmcp import FastMCP
+from figma_mcp.clean_node import transform_figma_json
+
+
 
 
 def main():
@@ -48,7 +49,8 @@ def main():
         figma_data = response.json()
         
         if download_file:
-            with open(f"{file_key}.json", "w") as f:
+            safe_file_key = re.sub(r'\W+', '_', file_key)
+            with open(f"{safe_file_key}.json", "w") as f:
                 json.dump(figma_data, f, indent=2)
         
         return figma_data
@@ -59,7 +61,7 @@ def main():
         def traverse_nodes(node):
             if "children" in node:
                 for child in node.get("children", []):
-                    if "transitionNodeID" in child and child.get("transitionNodeID"):
+                    if "transitionNodeId" in child and child.get("transitionNodeId"):
                         connections.append({
                             "sourceNodeID": child.get("id"),
                             "sourceNodeName": child.get("name", "Unnamed"),
