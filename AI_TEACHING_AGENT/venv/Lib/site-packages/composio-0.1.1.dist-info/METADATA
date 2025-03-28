@@ -1,0 +1,28 @@
+Metadata-Version: 2.1
+Name: composio
+Version: 0.1.1
+Summary: Shim for composio-core.
+Home-page: https://github.com/tushar-composio/composio
+Author: Tushar Sadhwani
+Author-email: tushar@composio.dev
+License: MIT
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Typing :: Typed
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: composio-core
+
+# composio
+
+Shim for composio-core.
+
+Use `pip install composio-core` instead. 

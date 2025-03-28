@@ -1,0 +1,10 @@
+streamlit
+openai
+duckduckgo-search
+typing-extensions
+agno
+composio-phidata
+composio_core
+composio
+google-search-results
+arxiv
