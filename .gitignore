@@ -16,4 +16,24 @@ dist/figma_mcp-0.1.2-py3-none-any.whl
 dist/figma_mcp-0.1.2.tar.gz
 figma_mcp.egg-info/PKG-INFO
 figma_mcp.egg-info/SOURCES.txt
+AI_TEACHING_AGENT/.env
+
+
+# API Keys and credentials
 .env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+ENV/
