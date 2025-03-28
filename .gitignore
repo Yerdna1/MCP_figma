@@ -16,3 +16,4 @@ dist/figma_mcp-0.1.2-py3-none-any.whl
 dist/figma_mcp-0.1.2.tar.gz
 figma_mcp.egg-info/PKG-INFO
 figma_mcp.egg-info/SOURCES.txt
+.env
