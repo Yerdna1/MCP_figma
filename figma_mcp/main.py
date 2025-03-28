@@ -7,7 +7,9 @@ from pathlib import Path
 import re
 
 import requests
-from figma_mcp import FastMCP
+from fastmcp import FastMCP
+
+
 from dotenv import load_dotenv
 from figma_mcp.clean_node import transform_figma_json
 
