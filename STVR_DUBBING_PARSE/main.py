@@ -10,7 +10,6 @@ import pandas as pd
 import tempfile
 from datetime import datetime
 
-
 from config import setup_sidebar_config
 from file_utils import read_file
 from processor import ScreenplayProcessor
@@ -22,6 +21,9 @@ st.write("Upload a screenplay document to parse and analyze it using LLM agents.
 
 # Setup sidebar configuration
 config = setup_sidebar_config()
+
+# Add episode number input for segment numbering
+episode_number = st.sidebar.text_input("Episode Number (for segment numbering)", key="episode_number")
 
 # File upload
 uploaded_file = st.file_uploader("Choose a screenplay file", type=["txt", "docx"])
@@ -57,17 +59,18 @@ if uploaded_file:
             st.success(f"Processing completed in {end_time - start_time:.2f} seconds!")
             
             # Display the results in tabs
-            tabs = st.tabs(["Summary", "Characters", "Scenes", "Dialogue", "Raw Data"])
+            tabs = st.tabs(["Summary", "Characters", "Scenes", "Dialogue", "Export", "Raw Data"])
             
             with tabs[0]:  # Summary
                 summary = processor.generate_summary(result)
                 
                 # Display basic stats
                 st.subheader("Screenplay Statistics")
-                col1, col2, col3 = st.columns(3)
+                col1, col2, col3, col4 = st.columns(4)
                 col1.metric("Scenes", summary["scene_count"])
                 col2.metric("Characters", summary["character_count"])
                 col3.metric("Locations", summary["location_count"])
+                col4.metric("Segments", summary["segment_marker_count"])
                 
                 # Segment type distribution
                 st.subheader("Segment Types")
@@ -164,23 +167,60 @@ if uploaded_file:
                 else:
                     st.write("No dialogue identified.")
             
-            with tabs[4]:  # Raw Data
-                st.subheader("Raw Parsed Data")
+            with tabs[4]:  # Export
+                st.subheader("Export Options")
                 
-                # Enable download of JSON
+                # DOCX Export section
+                st.write("### Export to Formatted DOCX")
+                st.write("Create a professionally formatted DOCX file with:")
+                st.write("- Speaker names in RED color")
+                st.write("- Scene headers (INT/EXT) in BLUE color")
+                st.write("- Segment markers with dash separators")
+                st.write("- Segment numbers positioned at right margin")
+                
+                # Generate DOCX file
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_filename = f"screenplay_formatted_{timestamp}.docx"
+                
+                if st.button("Generate Formatted DOCX"):
+                    with st.spinner("Creating formatted DOCX file..."):
+                        # Create a temporary directory to save the file
+                        with tempfile.TemporaryDirectory() as temp_dir:
+                            output_path = os.path.join(temp_dir, output_filename)
+                            docx_path = processor.export_to_docx(
+                                result, 
+                                output_path=output_path,
+                                episode_number=episode_number
+                            )
+                            
+                            if docx_path and os.path.exists(docx_path):
+                                # Read the file for download
+                                with open(docx_path, "rb") as file:
+                                    docx_data = file.read()
+                                
+                                # Create download button
+                                st.download_button(
+                                    label="Download Formatted DOCX",
+                                    data=docx_data,
+                                    file_name=output_filename,
+                                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                )
+                            else:
+                                st.error("Failed to generate DOCX file.")
+                
+                # Other export options
+                st.write("### Other Export Options")
+                
+                # JSON Export
                 st.download_button(
-                    "Download JSON",
+                    "Download JSON Data",
                     processor.export_json(result),
-                    file_name=f"screenplay_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                    file_name=f"screenplay_analysis_{timestamp}.json",
                     mime="application/json"
                 )
                 
-                # Show raw JSON if debug mode is enabled
-                if config["debug_mode"]:
-                    st.json(result)
-                
-                # Export to CSV
-                st.subheader("Export to CSV")
+                # CSV Export
+                st.write("#### Export to CSV")
                 dataframes = processor.export_csv(result)
                 
                 for df_name, df in dataframes.items():
@@ -188,9 +228,26 @@ if uploaded_file:
                     st.download_button(
                         f"Download {df_name.capitalize()} CSV",
                         csv,
-                        file_name=f"screenplay_{df_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                        file_name=f"screenplay_{df_name}_{timestamp}.csv",
                         mime="text/csv"
                     )
+            
+            with tabs[5]:  # Raw Data
+                st.subheader("Raw Parsed Data")
+                
+                # Show segment markers specifically
+                segment_markers = [s for s in result["segments"] if 
+                                  s.get("type") == "segment_marker" or 
+                                  (s.get("timecode") and "-" in s.get("timecode"))]
+                
+                if segment_markers:
+                    st.write(f"### Segment Markers ({len(segment_markers)})")
+                    st.json(segment_markers)
+                
+                # Show raw JSON if debug mode is enabled
+                if config["debug_mode"]:
+                    st.write("### Complete Parsed Data")
+                    st.json(result)
 
 # Show instructions when no file is uploaded
 else:
@@ -207,13 +264,15 @@ else:
         - Typos and variations in character names
         - Different audio notation styles (MO, VO, zMO, etc.)
         - Non-standard scene headers and transitions
+        - Segment markers with proper numbering for professional output
         
         #### How it works
         
-        1. **Document Segmentation**: Breaks the screenplay into logical parts
+        1. **Document Segmentation**: Breaks the screenplay into logical parts and identifies segment markers
         2. **Entity Recognition**: Identifies characters, locations, and audio notations
         3. **Dialogue Processing**: Normalizes dialogue and speaker information
         4. **Correction**: Fixes inconsistencies across the document
+        5. **DOCX Export**: Creates professionally formatted document with proper styling
         
         #### LLM Providers
         
@@ -221,6 +280,15 @@ else:
         for processing. For high accuracy, GPT-4 is recommended, but GPT-3.5-Turbo works well too.
         
         For local processing, ensure you have Ollama installed and running with your desired model.
+        
+        #### DOCX Export Features
+        
+        The app can generate professionally formatted DOCX files with:
+        - Speaker names in RED color using Verdana 13pt font
+        - Scene headers (INT/EXT) in BLUE color
+        - Full-width dash separators for segments
+        - Segment numbers positioned at the right margin
+        - Proper spacing and formatting for a clean, professional look
         """)
 
 # Footer

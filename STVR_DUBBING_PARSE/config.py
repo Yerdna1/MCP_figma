@@ -5,10 +5,10 @@ import streamlit as st
 
 # Constants
 DEFAULT_OPENAI_MODEL = "gpt-3.5-turbo"
-DEFAULT_OLLAMA_MODEL = "deepseek-coder"
+DEFAULT_OLLAMA_MODEL = "gemma3"
 TEMPERATURE = 0.01
 MAX_RETRIES = 3
-RETRY_DELAY = 4  # seconds
+RETRY_DELAY = 1  # seconds
 
 def setup_sidebar_config():
     """Set up and return the configuration from the sidebar."""
@@ -28,8 +28,8 @@ def setup_sidebar_config():
         "model": None,
         "ollama_url": None,
         "use_code_format": False,
-        "parsing_granularity": 300,
-        "timeout_seconds": 120,
+        "parsing_granularity": 1000,
+        "timeout_seconds": 30,
         "detailed_progress": True,
         "debug_mode": False
     }
@@ -70,10 +70,10 @@ def setup_sidebar_config():
     # Common processing options
     config["parsing_granularity"] = st.sidebar.slider(
         "Processing Granularity",
-        min_value=200,
-        max_value=1000,
-        value=300,
-        step=100,
+        min_value=1000,
+        max_value=5000,
+        value=2000,
+        step=1000,
         help="Number of characters to process at once. Lower values are slower but more reliable.",
         key="parsing_granularity"
     )
@@ -82,7 +82,7 @@ def setup_sidebar_config():
         "Request Timeout (seconds)",
         min_value=30,
         max_value=300,
-        value=120,
+        value=60,
         step=30,
         help="Maximum time to wait for each model request. Increase for complex chunks.",
         key="timeout_seconds"
