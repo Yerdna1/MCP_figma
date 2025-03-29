@@ -5,11 +5,12 @@ import json
 import streamlit as st
 import pandas as pd
 from typing import Dict, List, Any, Optional
+from correction_agent import CorrectionAgent
+from segmentation_agent import DocumentSegmentationAgent
+from entity_agent import EntityRecognitionAgent
+from dialogue_agent import DialogueProcessingAgent
 
-from STVR_DUBBING_PARSE.correction_agent import CorrectionAgent
-from STVR_DUBBING_PARSE.dialogue_agent import DialogueProcessingAgent
-from STVR_DUBBING_PARSE.entity_agent import EntityRecognitionAgent
-from STVR_DUBBING_PARSE.segmentation_agent import DocumentSegmentationAgent
+
 
 class ScreenplayProcessor:
     """Main processor that orchestrates the agents to parse and analyze a screenplay."""

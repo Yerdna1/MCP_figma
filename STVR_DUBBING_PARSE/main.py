@@ -13,6 +13,7 @@ from datetime import datetime
 
 from config import setup_sidebar_config
 from file_utils import read_file
+from processor import ScreenplayProcessor
 
 
 # Configure page

@@ -1,31 +1,3 @@
-[project]
-name = "figma-mcp"
-version = "0.1.3"
-description = "Allow your AI coding agents to access figma files & prototypes directly"
-readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "mcp[cli]>=1.3.0",
-    "python-dotenv>=1.0.1",
-    "requests>=2.32.3",
-]
-authors = [
-    {name = "Jason Zhou", email = "jason.zhou.design@gmail.com"}
-]
-license = {text = "MIT"}
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
-
-[project.urls]
-"Homepage" = "https://github.com/JayZeeDesign/figma-mcp"
-"Bug Tracker" = "https://github.com/JayZeeDesign/figma-mcp"
-
-[project.scripts]
-figma-mcp = "figma_mcp.main:main"
-
-[build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+[tool.setuptools]
+packages = ["STVR_DUBBING_PARSE"]
+package-dir = {"" = "STVR_DUBBING_PARSE"}

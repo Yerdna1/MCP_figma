@@ -5,8 +5,8 @@ import re
 import json
 import streamlit as st
 from typing import Dict, List, Any
+from llm_agent import LLMAgent  # Import LLMAgent from its module
 
-from STVR_DUBBING_PARSE.llm_agent import LLMAgent
 
 
 
